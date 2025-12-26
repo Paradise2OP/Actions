@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vprofile-artifacts
-          path: target/*.ear  
+          path: target/*.war  
 
       - name: Build jobs failed
         if: failure()
@@ -56,4 +56,29 @@ jobs:
       - name: Run tests on other branches
         if: github.ref != 'refs/heads/main'
         run: echo "Skipping tests on non-main branches."
-       
+        
+  security-scanning:
+   runs-on: ubuntu-latest
+   needs: build
+   steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Run Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          format: 'json'
+          output: 'trivy-report.json'
+          exit-code: '0'
+          ignore-unfixed: true
+
+      - name: Upload Security Scan Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.json
