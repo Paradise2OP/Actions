@@ -8,8 +8,8 @@ on:
     branches:
       - main
   workflow_dispatch:
-  schedule:
-    - cron: '59 00 * * 1-5'  # Weekly on Sundays at midnight
+  #schedule:
+    #- cron: '59 00 * * 1-5'  # Weekly on Sundays at midnight
 
 env:
   ECR_REPOSITORY: 'github-actions'
